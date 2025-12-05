@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Platform } from 'react-native';
-import { Home, BookOpen, Music, TrendingUp, User } from 'lucide-react-native';
+import { Home, BookOpen, Music, TrendingUp, User, Target } from 'lucide-react-native';
 import { OnboardingScreen } from './src/screens/OnboardingScreen';
-import { HomeScreen } from './src/screens/HomeScreen';
-import { JournalScreen } from './src/screens/JournalScreen';
-import { SoundscapeScreen } from './src/screens/SoundscapeScreen';
-import { AnalyticsScreen } from './src/screens/AnalyticsScreen';
+import { HomeScreenEnhanced } from './src/screens/HomeScreenEnhanced';
+import { JournalScreenEnhanced } from './src/screens/JournalScreenEnhanced';
+import { SoundscapeScreenEnhanced } from './src/screens/SoundscapeScreenEnhanced';
+import { AnalyticsScreenEnhanced } from './src/screens/AnalyticsScreenEnhanced';
 import { ProfileScreen } from './src/screens/ProfileScreen';
 import { theme } from './src/theme';
+import { HabitsScreen } from './src/screens/HabitsScreen';
 
 export default function App() {
   const [isOnboarded, setIsOnboarded] = useState(false);
@@ -24,10 +25,11 @@ export default function App() {
   }
 
   const tabs = [
-    { id: 'home', icon: Home, label: 'Home', component: HomeScreen },
-    { id: 'journal', icon: BookOpen, label: 'Journal', component: JournalScreen },
-    { id: 'sound', icon: Music, label: 'Sound', component: SoundscapeScreen },
-    { id: 'analytics', icon: TrendingUp, label: 'Analytics', component: AnalyticsScreen },
+    { id: 'home', icon: Home, label: 'Home', component: HomeScreenEnhanced },
+    { id: 'journal', icon: BookOpen, label: 'Journal', component: JournalScreenEnhanced },
+    { id: 'sound', icon: Music, label: 'Sound', component: SoundscapeScreenEnhanced },
+    { id: 'analytics', icon: TrendingUp, label: 'Analytics', component: AnalyticsScreenEnhanced },
+    { id: 'habits', icon: Target, label: 'Habits', component: HabitsScreen },
     { id: 'profile', icon: User, label: 'Profile', component: ProfileScreen },
   ];
 
