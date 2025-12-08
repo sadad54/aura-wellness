@@ -38,9 +38,9 @@ export const HomeScreenEnhanced: React.FC<HomeScreenEnhancedProps> = ({ userData
   ];
 
   const activities = [
-    { icon: Music, title: 'Ocean Waves', subtitle: '15 min session', color: '#06B6D4', screen: 'Soundscape' },
+    { icon: Music, title: 'Ocean Waves', subtitle: '15 min session', color: '#06B6D4', screen: 'Sounds' },
     { icon: BookOpen, title: 'Morning Journal', subtitle: 'Write your thoughts', color: '#EC4899', screen: 'Journal' },
-    { icon: Moon, title: 'Sleep Meditation', subtitle: 'Prepare for rest', color: '#8B5CF6', screen: 'Soundscape' },
+    { icon: Heart, title: 'Build Daily Habits', subtitle: 'Track your habits', color: '#8B5CF6', screen: 'Habits' },
     { icon: Wind, title: 'Breathing Exercise', subtitle: '5 min practice', color: '#10B981', screen: 'Wellness' },
   ];
 
@@ -151,7 +151,7 @@ export const HomeScreenEnhanced: React.FC<HomeScreenEnhancedProps> = ({ userData
           variant="primary"
           gradient={['#06B6D4', '#0EA5E9']}
           icon={Music}
-          onPress={() => onNavigate?.('Soundscape')}
+          onPress={() => onNavigate?.('Sounds')}
           style={styles.actionButton}
         >
           Meditate
