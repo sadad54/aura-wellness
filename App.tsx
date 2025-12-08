@@ -12,17 +12,46 @@ import { HabitsScreen } from './src/screens/HabitsScreen';
 import { ReflectionScreen } from './src/screens/ReflectionScreen';
 import { WellnessToolsScreen } from './src/screens/WellnessToolsScreen';
 import { GroundingScreen } from './src/screens/GroundingScreen';
+import { BreathScreen } from './src/screens/BreathScreen';
+import { EmotionWheelScreen } from './src/screens/EmotionWheelScreen';
+import { ThoughtReframeScreen } from './src/screens/ThoughtReframeScreen';
+import { AffirmationsScreen } from './src/screens/AffirmationsScreen';
+import { InnerChildScreen } from './src/screens/InnerChildScreen';
+
+
 
 // Components
 import { MoreMenu } from './src/components/MoreMenu';
 import { theme } from './src/theme';
 
+// Wrapper for Wellness Tab
 const WellnessTabWrapper = () => {
-  const [currentView, setCurrentView] = useState<'tools' | 'grounding'>('tools');
-  if (currentView === 'grounding') {
-    return <GroundingScreen onClose={() => setCurrentView('tools')} />;
+  const [currentView, setCurrentView] = useState<'tools' | 'grounding' | 'breath' | 'emotion' | 'cbt' | 'affirm' | 'inner'>('tools');
+
+  // Map IDs from WellnessToolsScreen to internal states
+  const handleNavigate = (screenId: string) => {
+    switch(screenId) {
+      case 'Grounding': setCurrentView('grounding'); break;
+      case 'breath': setCurrentView('breath'); break;
+      case 'emotion': setCurrentView('emotion'); break;
+      case 'cbt': setCurrentView('cbt'); break;
+      case 'affirm': setCurrentView('affirm'); break;
+      case 'inner': setCurrentView('inner'); break;
+      default: setCurrentView('tools');
+    }
+  };
+
+  const close = () => setCurrentView('tools');
+
+  switch (currentView) {
+    case 'grounding': return <GroundingScreen onClose={close} />;
+    case 'breath': return <BreathScreen onClose={close} />;
+    case 'emotion': return <EmotionWheelScreen onClose={close} />;
+    case 'cbt': return <ThoughtReframeScreen onClose={close} />;
+    case 'affirm': return <AffirmationsScreen onClose={close} />;
+    case 'inner': return <InnerChildScreen onClose={close} />;
+    default: return <WellnessToolsScreen onNavigate={handleNavigate} />;
   }
-  return <WellnessToolsScreen onNavigate={(screen) => setCurrentView(screen === 'Grounding' ? 'grounding' : 'tools')} />;
 };
 
 export default function App() {

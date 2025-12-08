@@ -10,12 +10,12 @@ interface WellnessToolsScreenProps {
 
 export const WellnessToolsScreen: React.FC<WellnessToolsScreenProps> = ({ onNavigate }) => {
   const tools = [
-    { id: 'panic', title: 'Panic SOS', subtitle: '5-4-3-2-1 Grounding', icon: ShieldAlert, color: '#06B6D4' },
-    { id: 'breath', title: 'Breath', subtitle: 'Nervous system', icon: Wind, color: '#8B5CF6' },
-    { id: 'cbt', title: 'Reframing', subtitle: 'CBT Tracker', icon: Brain, color: '#EC4899' },
-    { id: 'emotion', title: 'Emotions', subtitle: 'Identify feelings', icon: Heart, color: '#EF4444' },
-    { id: 'affirm', title: 'Affirmations', subtitle: 'Daily power', icon: Sparkles, color: '#F59E0B' },
-    { id: 'inner', title: 'Inner Child', subtitle: 'Healing dialog', icon: MessageCircle, color: '#10B981' },
+    { id: 'panic', title: 'Panic SOS', subtitle: '5-4-3-2-1 Grounding', icon: ShieldAlert, color: '#06B6D4', screen: 'Grounding' },
+    { id: 'breath', title: 'Breath', subtitle: 'Nervous system', icon: Wind, color: '#8B5CF6', screen: 'breath' },
+    { id: 'cbt', title: 'Reframing', subtitle: 'CBT Tracker', icon: Brain, color: '#EC4899', screen: 'cbt' },
+    { id: 'emotion', title: 'Emotions', subtitle: 'Identify feelings', icon: Heart, color: '#EF4444', screen: 'emotion' },
+    { id: 'affirm', title: 'Affirmations', subtitle: 'Daily power', icon: Sparkles, color: '#F59E0B', screen: 'affirm' },
+    { id: 'inner', title: 'Inner Child', subtitle: 'Healing dialog', icon: MessageCircle, color: '#10B981', screen: 'inner' },
   ];
 
   return (
@@ -49,7 +49,7 @@ export const WellnessToolsScreen: React.FC<WellnessToolsScreenProps> = ({ onNavi
           <TouchableOpacity 
             key={tool.id} 
             style={styles.gridItem}
-            onPress={() => tool.id === 'panic' && onNavigate('Grounding')}
+            onPress={() => onNavigate(tool.screen)}
           >
             <GlassCard style={styles.toolCard}>
               <View style={[styles.iconContainer, { backgroundColor: `${tool.color}20` }]}>
