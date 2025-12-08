@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Animated, Easing, TouchableOpacity, Platform } 
 import { X, Wind } from 'lucide-react-native';
 import { theme } from '../theme';
 import { GlassCard } from '../components/GlassCard';
+import * as Haptics from 'expo-haptics';
 
 export const BreathScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [phase, setPhase] = useState('Inhale'); // Inhale, Hold, Exhale, Hold
@@ -13,21 +14,25 @@ export const BreathScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
     const breathe = () => {
       // 1. Inhale (4s)
       setPhase('Inhale');
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); // Distinct 'Start' bump
       Animated.parallel([
         Animated.timing(scaleAnim, { toValue: 2.5, duration: 4000, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
         Animated.timing(fadeAnim, { toValue: 1, duration: 4000, useNativeDriver: true })
       ]).start(() => {
         // 2. Hold (4s)
         setPhase('Hold');
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); // Soft 'Hold' tap
         setTimeout(() => {
           // 3. Exhale (4s)
           setPhase('Exhale');
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); // Distinct 'Release' bump
           Animated.parallel([
             Animated.timing(scaleAnim, { toValue: 1, duration: 4000, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
             Animated.timing(fadeAnim, { toValue: 0.4, duration: 4000, useNativeDriver: true })
           ]).start(() => {
             // 4. Hold (4s)
             setPhase('Hold');
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             setTimeout(breathe, 4000);
           });
         }, 4000);

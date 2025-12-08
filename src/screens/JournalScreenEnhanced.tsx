@@ -7,12 +7,28 @@ import { MoodSelector, type Mood } from '../components/MoodSelector';
 import { AIInsightCard } from '../components/AIInsightCard';
 import { AnimatedButton } from '../components/AnimatedButton';
 import { theme } from '../theme';
+import { useWellness } from '../context/WellnessContext';
+
 
 export const JournalScreenEnhanced: React.FC = () => {
   const [entry, setEntry] = useState('');
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [moodIntensity, setMoodIntensity] = useState(5);
   const [aiExpanded, setAiExpanded] = useState(false);
+const { addJournalEntry } = useWellness();
+const handleSave = () => {
+    if (!entry) return;
+    
+    addJournalEntry({
+      text: entry,
+      mood: selectedMood || 'neutral',
+      intensity: moodIntensity
+    });
+    
+    setEntry(''); // Clear input
+    // Ideally, show a success toast or navigate back
+    console.log("Saved to global state!");
+  };
 
   const moodOptions: Mood[] = [
     { id: 'joyful', label: 'Joyful', emoji: '😄', color: '#F59E0B' },
@@ -179,7 +195,7 @@ export const JournalScreenEnhanced: React.FC = () => {
         variant="primary"
         gradient={[theme.colors.primary, '#EC4899']}
         icon={Check}
-        onPress={() => console.log('Saving entry...')}
+        onPress={handleSave}
         style={styles.saveButton}
       >
         Save Entry

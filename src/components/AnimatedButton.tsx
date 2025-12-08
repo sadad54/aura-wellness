@@ -2,6 +2,8 @@ import React from 'react';
 import { TouchableOpacity, Text, View, StyleSheet, GestureResponderEvent } from 'react-native';
 import { theme } from '../theme';
 import type { LucideIcon } from 'lucide-react-native';
+import * as Haptics from 'expo-haptics';
+
 
 interface AnimatedButtonProps {
   variant?: 'primary' | 'ghost' | 'floating';
@@ -55,7 +57,10 @@ export const AnimatedButton: React.FC<AnimatedButtonProps> = ({
         disabled && { opacity: 0.5 },
         style,
       ]}
-      onPress={onPress}
+      onPress={(e) => {
+    Haptics.selectionAsync(); // Subtle click feel
+    onPress(e);
+  }}
       disabled={disabled}
       activeOpacity={0.7}
     >

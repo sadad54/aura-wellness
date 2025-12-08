@@ -23,6 +23,7 @@ import { InnerChildScreen } from './src/screens/InnerChildScreen';
 // Components
 import { MoreMenu } from './src/components/MoreMenu';
 import { theme } from './src/theme';
+import { WellnessProvider } from './src/context/WellnessContext';
 
 // Wrapper for Wellness Tab
 const WellnessTabWrapper = () => {
@@ -110,6 +111,7 @@ export default function App() {
   const isMoreTabActive = ['Habits', 'Wellness', 'Reflection'].includes(activeTab);
 
   return (
+    <WellnessProvider>
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={theme.colors.background} />
       
@@ -157,6 +159,7 @@ export default function App() {
           </View>
       </View>
     </View>
+    </WellnessProvider>
   );
 }
 
