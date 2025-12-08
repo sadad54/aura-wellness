@@ -13,30 +13,26 @@ interface MoreMenuProps {
 const { height } = Dimensions.get('window');
 
 export const MoreMenu: React.FC<MoreMenuProps> = ({ visible, onClose, onNavigate }) => {
-  // Keep component rendered while animating out
   const [showComponent, setShowComponent] = useState(visible);
-  // Start position: pushed down by 300 units (off-screen/behind tab bar)
   const slideAnim = useRef(new Animated.Value(300)).current;
 
   useEffect(() => {
     if (visible) {
       setShowComponent(true);
-      // Slide Up Animation
       Animated.timing(slideAnim, {
         toValue: 0,
-        duration: 300, // 300ms for smooth entry
+        duration: 300,
         useNativeDriver: true,
-        easing: Easing.out(Easing.back(1.5)), // Slight bounce effect for "springy" feel
+        easing: Easing.out(Easing.back(1.5)),
       }).start();
     } else {
-      // Slide Down Animation
       Animated.timing(slideAnim, {
-        toValue: 300, // Push back down
+        toValue: 300,
         duration: 250,
         useNativeDriver: true,
         easing: Easing.in(Easing.cubic),
       }).start(() => {
-        setShowComponent(false); // Unmount after animation finishes
+        setShowComponent(false);
       });
     }
   }, [visible]);
@@ -44,27 +40,9 @@ export const MoreMenu: React.FC<MoreMenuProps> = ({ visible, onClose, onNavigate
   if (!showComponent) return null;
 
   const menuItems = [
-    { 
-      id: 'habits', 
-      label: 'Habits', 
-      icon: Target, 
-      color: '#10B981', // Green
-      screen: 'Habits' 
-    },
-    { 
-      id: 'wellness', 
-      label: 'Wellness', 
-      icon: Brain, 
-      color: '#8B5CF6', // Purple
-      screen: 'Wellness' 
-    },
-    { 
-      id: 'reflection', 
-      label: 'Reflection', 
-      icon: Heart, 
-      color: '#EC4899', // Pink
-      screen: 'Reflection' 
-    },
+    { id: 'habits', label: 'Habits', icon: Target, color: '#10B981', screen: 'Habits' },
+    { id: 'wellness', label: 'Wellness', icon: Brain, color: '#8B5CF6', screen: 'Wellness' },
+    { id: 'reflection', label: 'Reflection', icon: Heart, color: '#EC4899', screen: 'Reflection' },
   ];
 
   return (
@@ -90,9 +68,6 @@ export const MoreMenu: React.FC<MoreMenuProps> = ({ visible, onClose, onNavigate
                 style={styles.menuItem}
                 onPress={() => {
                   onNavigate(item.screen);
-                  // Don't close immediately here if you want navigation to happen first, 
-                  // but usually closing the menu is desired.
-                  // The parent handles state, so this will trigger the 'visible=false' effect above.
                   onClose(); 
                 }}
               >
@@ -112,7 +87,7 @@ export const MoreMenu: React.FC<MoreMenuProps> = ({ visible, onClose, onNavigate
 const styles = StyleSheet.create({
   overlay: {
     position: 'absolute',
-    bottom: 80, // Positioned just above the tab bar
+    bottom: 90, // Raised slightly to sit above the floating tab bar
     left: 0,
     right: 0,
     alignItems: 'center',
@@ -124,15 +99,18 @@ const styles = StyleSheet.create({
   },
   container: {
     width: '100%',
-    backgroundColor: '#1A1A24',
+    // Transparent dark background
+    backgroundColor: 'rgba(20, 20, 30, 0.85)', 
     padding: theme.spacing.lg,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
-    // Shadow for depth
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    // Purple Border
+    borderColor: theme.colors.primary, 
+    // Purple Glow Effect (iOS)
+    shadowColor: theme.colors.primary, 
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.6,
+    shadowRadius: 20,
+    // Elevation for Android
     elevation: 10,
   },
   header: {

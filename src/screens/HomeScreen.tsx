@@ -7,9 +7,10 @@ import { theme } from '../theme';
 
 interface HomeScreenProps {
   userData?: { name?: string };
+  onNavigate?: (screen: string) => void;
 }
 
-export const HomeScreen: React.FC<HomeScreenProps> = ({ userData }) => {
+export const HomeScreen: React.FC<HomeScreenProps> = ({ userData, onNavigate }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -32,10 +33,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ userData }) => {
   ];
 
   const activities = [
-    { icon: Music, title: 'Ocean Waves', subtitle: '15 min session', color: '#06B6D4' },
-    { icon: BookOpen, title: 'Morning Journal', subtitle: 'Write your thoughts', color: '#EC4899' },
-    { icon: Moon, title: 'Sleep Meditation', subtitle: 'Prepare for rest', color: '#8B5CF6' },
-    { icon: Wind, title: 'Breathing Exercise', subtitle: '5 min practice', color: '#10B981' },
+    { icon: Music, title: 'Ocean Waves', subtitle: '15 min session', color: '#06B6D4', screen: 'Sounds' },
+    { icon: BookOpen, title: 'Morning Journal', subtitle: 'Write your thoughts', color: '#EC4899', screen: 'Journal' },
+    { icon: Heart, title: 'Build Daily Habits', subtitle: 'Track your habits', color: '#8B5CF6', screen: 'Habits' },
+    { icon: Wind, title: 'Breathing Exercise', subtitle: '5 min practice', color: '#10B981', screen: 'Wellness' },
   ];
 
   return (
@@ -88,7 +89,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ userData }) => {
 
       <Text style={styles.sectionTitle}>Recommended Activities</Text>
       {activities.map((activity, index) => (
-        <TouchableOpacity key={index}>
+        <TouchableOpacity 
+          key={index}
+          onPress={() => onNavigate?.(activity.screen)}
+        >
           <GlassCard style={styles.activityCard}>
             <View style={[styles.activityIcon, { backgroundColor: `${activity.color}20` }]}>
               <activity.icon size={24} color={activity.color} />
