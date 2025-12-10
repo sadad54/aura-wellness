@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Platform } from 'react-native';
 import { Home, BookOpen, Waves, BarChart2, User, Menu } from 'lucide-react-native';
 // Screens
@@ -23,11 +23,20 @@ import { InnerChildScreen } from './src/screens/InnerChildScreen';
 // Components
 import { MoreMenu } from './src/components/MoreMenu';
 import { theme } from './src/theme';
-import { WellnessProvider } from './src/context/WellnessContext';
+import { useWellness, WellnessProvider } from './src/context/WellnessContext';
 
 // Wrapper for Wellness Tab
 const WellnessTabWrapper = () => {
-  const [currentView, setCurrentView] = useState<'tools' | 'grounding' | 'breath' | 'emotion' | 'cbt' | 'affirm' | 'inner'>('tools');
+  const { activeTool, setActiveTool } = useWellness(); // Get global tool state
+
+  const [currentView, setCurrentView] = useState('tools');
+
+  // Sync global state to local view
+  useEffect(() => {
+    if (activeTool) {
+      setCurrentView(activeTool);
+    }
+  }, [activeTool]);
 
   // Map IDs from WellnessToolsScreen to internal states
   const handleNavigate = (screenId: string) => {
@@ -42,7 +51,10 @@ const WellnessTabWrapper = () => {
     }
   };
 
-  const close = () => setCurrentView('tools');
+  const close = () => {
+    setCurrentView('tools');
+    setActiveTool(null); // Clear global state
+  };
 
   switch (currentView) {
     case 'grounding': return <GroundingScreen onClose={close} />;
@@ -90,7 +102,9 @@ export default function App() {
       case 'Habits': return <HabitsScreen />;
       case 'Wellness': return <WellnessTabWrapper />;
       case 'Reflection': return <ReflectionScreen />;
-      default: return <HomeScreenEnhanced userData={userData || undefined} />;
+      default: return <HomeScreenEnhanced userData={userData || undefined} onNavigate={function (tab: string): void {
+        throw new Error('Function not implemented.');
+      } } />;
     }
   };
 

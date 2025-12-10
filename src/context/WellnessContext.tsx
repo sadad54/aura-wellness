@@ -14,12 +14,15 @@ interface WellnessContextType {
   data: WellnessData;
   addJournalEntry: (entry: { text: string; mood: string; intensity: number }) => void;
   completeSession: () => void; // Call this when finishing Breathing/Audio
+  activeTool: string | null;
+  setActiveTool: (tool: string | null) => void;
 }
 
 const WellnessContext = createContext<WellnessContextType | undefined>(undefined);
 
 export const WellnessProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [data, setData] = useState<WellnessData>({
+  const [activeTool, setActiveTool] = useState<string | null>(null);
+    const [data, setData] = useState<WellnessData>({
     wellnessScore: 75, // Starting score
     streak: 0,
     totalSessions: 0,
@@ -70,7 +73,7 @@ export const WellnessProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   return (
-    <WellnessContext.Provider value={{ data, addJournalEntry, completeSession }}>
+    <WellnessContext.Provider value={{ data, addJournalEntry, completeSession, activeTool, setActiveTool }}>
       {children}
     </WellnessContext.Provider>
   );
