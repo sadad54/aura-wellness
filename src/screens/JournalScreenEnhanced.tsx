@@ -93,7 +93,7 @@ const handleSave = async () => {
 
       {/* Mood Intensity Slider */}
       {selectedMood && (
-        <GlassCard style={styles.intensityCard}>
+        <GlassCard style={styles.intensityCard} gradient={true}>
           <View style={styles.intensityHeader}>
             <Text style={styles.intensityLabel}>Mood Intensity</Text>
             <View style={styles.intensityValue}>
@@ -136,7 +136,7 @@ const handleSave = async () => {
 
       {/* Journal Input */}
       <Text style={styles.sectionTitle}>Your Thoughts</Text>
-      <GlassCard style={styles.inputCard}>
+      <GlassCard style={styles.inputCard} gradient={true}>
         <TextInput
           style={styles.input}
           placeholder="What's on your mind today?"
@@ -162,7 +162,7 @@ const handleSave = async () => {
       </TouchableOpacity>
 
       {aiExpanded && (
-        <GlassCard style={styles.aiCard}>
+        <GlassCard style={styles.aiCard} gradient={true}>
           <View style={styles.aiButtonsRow}>
             <TouchableOpacity
               style={[styles.aiButton, styles.aiButtonPrimary]}
@@ -201,8 +201,7 @@ const handleSave = async () => {
         icon={Check}
         onPress={handleSave}
         style={styles.saveButton}
-        disabled={isAnalyzing || !entry}
-      >
+        disabled={isAnalyzing || !entry}       >
         {isAnalyzing ? "Analyzing..." : "Save Entry"}
       </AnimatedButton>
 
@@ -210,7 +209,7 @@ const handleSave = async () => {
       <Text style={styles.sectionTitle}>Recent Entries</Text>
       {[1, 2, 3].map((i) => (
         <TouchableOpacity key={i}>
-          <GlassCard style={styles.entryPreview}>
+          <GlassCard style={styles.entryPreview} gradient={true}>
             <View style={styles.entryHeader}>
               <View>
                 <Text style={styles.entryDate}>Dec {i}, 2024</Text>

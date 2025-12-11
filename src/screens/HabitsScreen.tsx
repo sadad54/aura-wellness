@@ -123,7 +123,7 @@ export const HabitsScreen: React.FC = () => {
       </View>
 
       {/* Progress Card */}
-      <GlassCard style={styles.progressCard}>
+      <GlassCard style={styles.progressCard} gradient={true}>
         <View style={styles.progressHeader}>
           <Text style={styles.progressTitle}>Today's Progress</Text>
           <View style={styles.progressBadge}>
@@ -154,7 +154,7 @@ export const HabitsScreen: React.FC = () => {
       </GlassCard>
 
       {/* AI Recommendation Card */}
-      <GlassCard style={styles.aiCard}>
+      <GlassCard style={styles.aiCard} gradient={true}>
         <View style={styles.aiHeader}>
           <View style={styles.aiIcon}>
             <TrendingUp size={20} color="#FFFFFF" />
@@ -201,7 +201,7 @@ export const HabitsScreen: React.FC = () => {
             onPress={() => toggleHabit(habit.id)}
             activeOpacity={0.7}
           >
-            <GlassCard style={styles.habitCard}>
+            <GlassCard style={styles.habitCard} gradient={true}>
               <View style={[styles.habitIcon, { backgroundColor: habit.color }]}>
                 <habit.icon size={24} color="#FFFFFF" />
               </View>
@@ -233,7 +233,7 @@ export const HabitsScreen: React.FC = () => {
 
         {/* Add New Habit Button */}
        <TouchableOpacity onPress={handleAddSmartHabit}>
-  <GlassCard style={styles.aiCard} gradient>
+  <GlassCard style={styles.aiCard} gradient={true}>
     <View style={styles.aiHeader}>
       <Sparkles size={20} color={theme.colors.warning} />
       <View style={styles.aiContent}>

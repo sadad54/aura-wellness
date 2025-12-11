@@ -32,9 +32,8 @@ export const SoundscapeScreen: React.FC = () => {
         </View>
 
         <GlassCard 
-          style={[styles.nowPlayingCard, { borderColor: currentScene?.color }]} 
-          gradient
-        >
+          style={[styles.nowPlayingCard, { borderColor: currentScene?.color }]}
+          gradient={true}        >
           <Text style={styles.nowPlayingLabel}>Now Playing</Text>
           <Text style={styles.nowPlayingScene}>
             {currentScene?.icon} {currentScene?.name}
@@ -80,12 +79,11 @@ export const SoundscapeScreen: React.FC = () => {
               <GlassCard
                 style={[
                   styles.sceneCard,
-                  ...(selectedScene === scene.id ? [{ 
-                    borderColor: scene.color, 
-                    borderWidth: 2 
+                  ...(selectedScene === scene.id ? [{
+                    borderColor: scene.color,
+                    borderWidth: 2
                   }] : []),
-                ]}
-              >
+                ]} gradient={true}              >
                 <Text style={styles.sceneIcon}>{scene.icon}</Text>
                 <Text style={styles.sceneName}>{scene.name}</Text>
               </GlassCard>

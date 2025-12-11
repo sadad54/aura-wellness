@@ -48,7 +48,7 @@ export const InnerChildScreen: React.FC<{ onClose: () => void }> = ({ onClose })
       </ScrollView>
 
       <View style={styles.inputArea}>
-        <GlassCard style={styles.inputCard}>
+        <GlassCard style={styles.inputCard} gradient={true}>
           <TextInput 
             style={styles.input} 
             placeholder="Type a message..." 

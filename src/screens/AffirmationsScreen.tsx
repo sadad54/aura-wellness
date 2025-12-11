@@ -31,7 +31,7 @@ export const AffirmationsScreen: React.FC<{ onClose: () => void }> = ({ onClose 
         <Text style={styles.title}>Daily Affirmations</Text>
         
         <TouchableOpacity activeOpacity={0.9} onPress={handleNext}>
-          <GlassCard style={styles.card} gradient>
+          <GlassCard style={styles.card} gradient={true}>
             <Sparkles size={40} color={theme.colors.warning} style={{ marginBottom: 20 }} />
             <Text style={styles.affirmationText}>"{affirmations[index]}"</Text>
             <Text style={styles.tapHint}>Tap for next</Text>

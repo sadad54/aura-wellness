@@ -120,7 +120,7 @@ export const AnalyticsScreenEnhanced: React.FC = () => {
       </View>
 
       {/* Wellness Score Card */}
-      <GlassCard style={styles.scoreCard} gradient>
+      <GlassCard style={styles.scoreCard} gradient = {true}>
         <View style={styles.scoreContent}>
           <View style={styles.scoreInfo}>
             <Text style={styles.scoreLabel}>Wellness Score</Text>
@@ -135,17 +135,17 @@ export const AnalyticsScreenEnhanced: React.FC = () => {
 
       {/* Key Metrics */}
       <View style={styles.metricsRow}>
-        <GlassCard style={styles.metricCard}>
+        <GlassCard style={styles.metricCard} gradient={true}>
           <Award size={24} color={theme.colors.success} />
           <Text style={styles.metricValue}>{currentStreak}</Text>
           <Text style={styles.metricLabel}>Day Streak</Text>
         </GlassCard>
-        <GlassCard style={styles.metricCard}>
+        <GlassCard style={styles.metricCard} gradient={true}>
           <Zap size={24} color={theme.colors.warning} />
           <Text style={styles.metricValue}>{totalSessions}</Text>
           <Text style={styles.metricLabel}>Sessions</Text>
         </GlassCard>
-        <GlassCard style={styles.metricCard}>
+        <GlassCard style={styles.metricCard} gradient={true}>
           <Heart size={24} color="#EC4899" />
           <Text style={styles.metricValue}>{averageMood}</Text>
           <Text style={styles.metricLabel}>Avg Mood</Text>
@@ -154,7 +154,7 @@ export const AnalyticsScreenEnhanced: React.FC = () => {
 
       {/* Mood Over Time Chart */}
       <Text style={styles.chartTitle}>Mood Over Time</Text>
-      <GlassCard style={styles.chartCard}>
+      <GlassCard style={styles.chartCard} gradient={true}>
         <View style={styles.chart}>
           {moodData.map((data, index) => (
             <ChartBar
@@ -170,7 +170,7 @@ export const AnalyticsScreenEnhanced: React.FC = () => {
 
       {/* Sleep Quality Chart */}
       <Text style={styles.chartTitle}>Sleep Quality (hours)</Text>
-      <GlassCard style={styles.chartCard}>
+      <GlassCard style={styles.chartCard} gradient={true}>
         <View style={styles.chart}>
           {sleepData.map((data, index) => (
             <ChartBar
@@ -186,7 +186,7 @@ export const AnalyticsScreenEnhanced: React.FC = () => {
 
       {/* Focus Score Chart */}
       <Text style={styles.chartTitle}>Focus Score</Text>
-      <GlassCard style={styles.chartCard}>
+      <GlassCard style={styles.chartCard} gradient={true}>
         <View style={styles.chart}>
           {focusData.map((data, index) => (
             <ChartBar
@@ -202,7 +202,7 @@ export const AnalyticsScreenEnhanced: React.FC = () => {
 
       {/* Stress Level Chart (inverted) */}
       <Text style={styles.chartTitle}>Stress Level</Text>
-      <GlassCard style={styles.chartCard}>
+      <GlassCard style={styles.chartCard} gradient={true}>
         <View style={styles.chart}>
           {stressData.map((data, index) => (
             <ChartBar
@@ -245,7 +245,7 @@ export const AnalyticsScreenEnhanced: React.FC = () => {
       />
 
       {/* Weekly Summary */}
-      <GlassCard style={styles.summaryCard}>
+      <GlassCard style={styles.summaryCard} gradient={true}>
         <View style={styles.summaryHeader}>
           <TrendingUp size={24} color={theme.colors.primary} />
           <Text style={styles.summaryTitle}>Weekly Summary</Text>

@@ -319,7 +319,7 @@ const { insight, wellnessScore, setActiveTool, data } = useWellness();
 
       {/* ========== SMART RECOMMENDATION CARD ========== */}
       {recommendedAction && (
-        <GlassCard style={styles.recommendationCard} gradient>
+        <GlassCard style={styles.recommendationCard} gradient={true}>
           <View style={styles.recommendationHeader}>
             <Sparkles size={20} color={theme.colors.warning} />
             <Text style={styles.recommendationLabel}>Recommended for You</Text>
@@ -386,16 +386,14 @@ const { insight, wellnessScore, setActiveTool, data } = useWellness();
               activeOpacity={0.65}
             >
               <GlassCard
-                style={[
-                  styles.gridActionGlass,
-                  {
-                    borderColor:
-                      focusedAction === action.id
-                        ? action.color
-                        : theme.colors.border,
-                  },
-                ]}
-              >
+                      style={[
+                          styles.gridActionGlass,
+                          {
+                              borderColor: focusedAction === action.id
+                                  ? action.color
+                                  : theme.colors.border,
+                          },
+                      ]} gradient={true}             >
                 {/* Top Section - Icon */}
                 <View
                   style={[
@@ -431,7 +429,7 @@ const { insight, wellnessScore, setActiveTool, data } = useWellness();
           ))}
       </View>
       {/* ========== WELLNESS INSIGHTS (Differentiator #4) ========== */}
-      <GlassCard style={styles.insightCard} gradient>
+      <GlassCard style={styles.insightCard} gradient={true}>
         <View style={styles.insightHeader}>
           <TrendingUp size={20} color={theme.colors.success} />
           <Text style={styles.insightLabel}>Your Pattern</Text>

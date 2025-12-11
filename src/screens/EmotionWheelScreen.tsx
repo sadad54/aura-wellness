@@ -53,7 +53,7 @@ export const EmotionWheelScreen: React.FC<{ onClose: () => void }> = ({ onClose 
         </Text>
 
         {selection ? (
-          <GlassCard style={[styles.resultCard, { borderColor: activeColor }]}>
+          <GlassCard style={[styles.resultCard, { borderColor: activeColor }]} gradient={true}>
             <Heart size={48} color={activeColor} fill={activeColor + '20'} />
             <Text style={styles.resultText}>{selection}</Text>
             <Text style={styles.resultSub}>Acknowledging this feeling is the first step.</Text>
@@ -66,9 +66,9 @@ export const EmotionWheelScreen: React.FC<{ onClose: () => void }> = ({ onClose 
             {currentOptions.map((item) => (
               <TouchableOpacity key={item} style={styles.gridItem} onPress={() => handleSelect(item)}>
                 <GlassCard style={[
-                  styles.card, 
-                  level === 1 ? { borderColor: emotions[item as keyof typeof emotions].color } : {}
-                ]}>
+                        styles.card,
+                        level === 1 ? { borderColor: emotions[item as keyof typeof emotions].color } : {}
+                    ]} gradient={true}>
                   <View style={[
                     styles.dot, 
                     { backgroundColor: level === 1 ? emotions[item as keyof typeof emotions].color : activeColor }

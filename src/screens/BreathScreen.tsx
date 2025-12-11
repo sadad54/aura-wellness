@@ -51,7 +51,7 @@ export const BreathScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => 
       </TouchableOpacity>
 
       <View style={styles.content}>
-        <GlassCard style={styles.headerCard}>
+        <GlassCard style={styles.headerCard} gradient={true}>
           <View style={styles.titleRow}>
             <Wind size={24} color="#8B5CF6" />
             <Text style={styles.title}>Box Breathing</Text>

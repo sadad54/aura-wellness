@@ -66,8 +66,7 @@ export const GroundingScreen: React.FC<GroundingScreenProps> = ({ onClose }) => 
           variant="primary"
           gradient={[currentStep.color, theme.colors.primary]}
           onPress={handleNext}
-          style={styles.button}
-        >
+          style={styles.button}        >
           {step === steps.length - 1 ? 'Complete' : 'Next'}
         </AnimatedButton>
       </ScrollView>

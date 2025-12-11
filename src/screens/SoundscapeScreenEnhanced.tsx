@@ -811,7 +811,7 @@ const recommendedSound = useMemo(() => {
 
         {/* PROFESSIONAL PLAYER CARD - Floating over background */}
         <View style={styles.playerCardContainer}>
-          <GlassCard style={styles.playerCard}>
+          <GlassCard style={styles.playerCard} gradient={true}>
             {/* Visualizer Section */}
             <View style={styles.visualizerSection}>
               {/* Outer Rotating Ring */}
@@ -929,15 +929,14 @@ const recommendedSound = useMemo(() => {
                   styles.sceneCard,
                   ...(selectedScene === scene.id
                     ? [
-                        {
-                          backgroundColor: `${scene.color}30`,
-                          borderColor: scene.color,
-                          borderWidth: 2,
-                        },
-                      ]
+                      {
+                        backgroundColor: `${scene.color}30`,
+                        borderColor: scene.color,
+                        borderWidth: 2,
+                      },
+                    ]
                     : []),
-                ]}
-              >
+                ]} gradient={true}              >
                 <Text style={styles.sceneEmoji}>{scene.icon}</Text>
                 <Text style={styles.sceneName}>{scene.name}</Text>
                 <Text style={styles.sceneSubtext}>
