@@ -18,6 +18,7 @@ interface WellnessContextType {
   user: any;
   activeTool: string | null;
   insight: string;
+  wellnessScore: number;
   
   // Actions
   setActiveTool: (tool: string | null) => void;
@@ -154,8 +155,12 @@ export const WellnessProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   // 2. CBT Reframing (AI Coach)
-  const getAIReframe = async (negativeThought: string) => {
+const getAIReframe = async (negativeThought: string) => {
     try {
+      if (!user) {
+        // Fallback for offline/no-auth
+        return { distortion: "Negative Filtering", reframe: "Try to look at the whole picture, not just the negative part." };
+      }
       const { data: aiResponse, error } = await supabase.functions.invoke('ai-coach', {
         body: { task: 'reframe', content: negativeThought },
       });
@@ -164,16 +169,16 @@ export const WellnessProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       return typeof aiResponse === 'string' ? JSON.parse(aiResponse) : aiResponse;
     } catch (error) {
       console.error('Reframe Error:', error);
-      Alert.alert("AI Unavailable", "Could not connect to your wellness coach.");
       return null;
     }
   };
-
   // 3. Habit Suggestion (AI Architect)
-  const suggestHabit = async () => {
+const suggestHabit = async () => {
     try {
+      if (!user) {
+        return { title: "Drink Water", time: "09:00 AM" };
+      }
       const recentJournal = data.journalEntries[0]?.text || "";
-      
       const { data: aiResponse, error } = await supabase.functions.invoke('ai-coach', {
         body: { task: 'habit_suggestion', content: recentJournal },
       });
@@ -197,7 +202,8 @@ export const WellnessProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       completeSession, 
       analyzeEntry,
       getAIReframe,
-      suggestHabit
+      suggestHabit,
+      wellnessScore: data.wellnessScore,
     }}>
       {children}
     </WellnessContext.Provider>

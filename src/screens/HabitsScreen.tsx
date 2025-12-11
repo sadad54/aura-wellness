@@ -18,10 +18,12 @@ import {
   Flame,
   Calendar,
   CheckCircle2,
-  Circle
+  Circle,
+  Sparkles
 } from 'lucide-react-native';
 import { GlassCard } from '../components/GlassCard';
 import { theme } from '../theme';
+import { useWellness } from '../context/WellnessContext';
 
 interface Habit {
   id: string;
@@ -35,7 +37,7 @@ interface Habit {
 
 export const HabitsScreen: React.FC = () => {
   const [filter, setFilter] = useState<'all' | 'morning' | 'evening' | 'anytime'>('all');
-  
+  const { suggestHabit } = useWellness();
   const [habits, setHabits] = useState<Habit[]>([
     {
       id: '1',
@@ -93,6 +95,22 @@ export const HabitsScreen: React.FC = () => {
       habit.id === id ? { ...habit, completed: !habit.completed } : habit
     ));
   };
+  const handleAddSmartHabit = async () => {
+  // AI looks at your last journal entry ("I felt anxious yesterday")
+  // and suggests: "Morning Breathing (5 mins)"
+  const suggestion = await suggestHabit(); 
+  if (suggestion) {
+    setHabits(prev => [...prev, {
+      id: Date.now().toString(),
+      name: suggestion.title, // e.g. "Anxiety Check-in"
+      time: suggestion.time,  // e.g. "9:00 AM"
+      streak: 0,
+      completed: false,
+      icon: Sun, // You can map icons dynamically
+      color: '#F59E0B'
+    }]);
+  }
+};
 
   const weekDays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
   const completedDays = [true, true, true, true, true, false, false];
@@ -214,12 +232,19 @@ export const HabitsScreen: React.FC = () => {
         ))}
 
         {/* Add New Habit Button */}
-        <TouchableOpacity>
-          <View style={styles.addNewHabit}>
-            <Plus size={20} color={theme.colors.textSecondary} />
-            <Text style={styles.addNewHabitText}>Add New Habit</Text>
-          </View>
-        </TouchableOpacity>
+       <TouchableOpacity onPress={handleAddSmartHabit}>
+  <GlassCard style={styles.aiCard} gradient>
+    <View style={styles.aiHeader}>
+      <Sparkles size={20} color={theme.colors.warning} />
+      <View style={styles.aiContent}>
+        <Text style={styles.aiTitle}>Generate Smart Habit</Text>
+        <Text style={styles.aiDescription}>
+          Based on your recent anxiety levels, AI suggests adding a grounding routine.
+        </Text>
+      </View>
+    </View>
+  </GlassCard>
+</TouchableOpacity>
       </View>
 
       {/* Weekly Overview */}

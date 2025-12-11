@@ -1,17 +1,31 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, ScrollView, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
-import { Brain, ArrowRight, Check, X } from 'lucide-react-native';
+import { Brain, ArrowRight, Check, X, Sparkles } from 'lucide-react-native';
 import { theme } from '../theme';
 import { GlassCard } from '../components/GlassCard';
 import { AnimatedButton } from '../components/AnimatedButton';
+import { useWellness } from '../context/WellnessContext';
+
 
 export const ThoughtReframeScreen: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [step, setStep] = useState(1);
   const [thought, setThought] = useState('');
   const [distortion, setDistortion] = useState('');
   const [reframe, setReframe] = useState('');
-
+const { getAIReframe } = useWellness(); // You'll add this to context
+  const [isLoading, setIsLoading] = useState(false);
   const distortions = ['All-or-Nothing', 'Catastrophizing', 'Mind Reading', 'Filtering', 'Labeling'];
+const handleAIAssist = async () => {
+    if (!thought) return;
+    setIsLoading(true);
+    const result = await getAIReframe(thought);
+    if (result) {
+      setDistortion(result.distortion);
+      setReframe(result.reframe); // Auto-fill the difficult part!
+      setStep(3); // Skip to the solution
+    }
+    setIsLoading(false);
+  };
 
   const renderStep = () => {
     switch(step) {
@@ -29,6 +43,19 @@ export const ThoughtReframeScreen: React.FC<{ onClose: () => void }> = ({ onClos
                 onChangeText={setThought}
               />
             </GlassCard>
+<View style={styles.aiRow}>
+        <TouchableOpacity 
+          style={styles.aiButton} 
+          onPress={handleAIAssist}
+          disabled={!thought || isLoading}
+        >
+          <Sparkles size={16} color="#FFF" />
+          <Text style={styles.aiButtonText}>
+            {isLoading ? "Thinking..." : "AI: Help me reframe this"}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
             <AnimatedButton onPress={() => setStep(2)} disabled={!thought}>Next</AnimatedButton>
           </>
         );
@@ -109,4 +136,7 @@ const styles = StyleSheet.create({
   successIcon: { width: 80, height: 80, borderRadius: 40, backgroundColor: theme.colors.success, alignItems: 'center', justifyContent: 'center', marginBottom: 20 },
   successTitle: { fontSize: 24, fontWeight: 'bold', color: theme.colors.text, marginBottom: 10 },
   successText: { fontSize: 16, color: theme.colors.textSecondary, textAlign: 'center' },
+  aiRow: { flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 20 },
+  aiButton: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: theme.colors.primary, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 16 },
+  aiButtonText: { color: '#FFF', fontSize: 12, fontWeight: '600' }
 });

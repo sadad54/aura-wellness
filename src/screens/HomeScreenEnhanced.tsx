@@ -32,7 +32,7 @@ interface HomeScreenEnhancedProps {
 }
 
 export const HomeScreenEnhanced: React.FC<HomeScreenEnhancedProps> = ({ userData, onNavigate }) => {
-const { insight, wellnessScore } = useWellness();
+const { insight, wellnessScore, setActiveTool, data } = useWellness();
   const [greeting, setGreeting] = useState('');
   const [timeOfDay, setTimeOfDay] = useState<'morning' | 'afternoon' | 'evening'>('morning');
   const [focusedAction, setFocusedAction] = useState<string | null>(null);

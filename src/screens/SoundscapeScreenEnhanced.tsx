@@ -582,7 +582,7 @@
 //     lineHeight: 18,
 //   },
 // });
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   View,
   Text,
@@ -597,6 +597,7 @@ import {
 import { Play, Pause, Volume2, Timer, RotateCcw, ChevronDown } from 'lucide-react-native';
 import { GlassCard } from '../components/GlassCard';
 import { theme } from '../theme';
+import { useWellness } from '../context/WellnessContext';
 
 interface Soundscape {
   id: string;
@@ -609,6 +610,7 @@ interface Soundscape {
 }
 
 const { width, height } = Dimensions.get('window');
+const { data } = useWellness(); // Get user's last mood
 
 export const SoundscapeScreenEnhanced: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -621,7 +623,16 @@ export const SoundscapeScreenEnhanced: React.FC = () => {
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const slideUpAnim = useRef(new Animated.Value(0)).current;
-
+// Logic to sort sounds dynamically
+const recommendedSound = useMemo(() => {
+  const lastMood = data.moodHistory[0]?.mood; // e.g., 'anxious'
+  
+  if (lastMood === 'anxious') return soundscapes.find(s => s.id === 'forest'); // Calming
+  if (lastMood === 'tired') return soundscapes.find(s => s.id === 'space'); // Deep rest
+  if (lastMood === 'happy') return soundscapes.find(s => s.id === 'ocean'); // Flow
+  
+  return soundscapes[0]; // Default
+}, [data.moodHistory]);
   const soundscapes: Soundscape[] = [
     {
       id: 'rainforest',
@@ -793,6 +804,8 @@ export const SoundscapeScreenEnhanced: React.FC = () => {
             <Text style={styles.heroDescription}>
               {currentScene?.description}
             </Text>
+            <Text style={styles.sectionTitle}>Selected for your mood ({data.moodHistory[0]?.mood})</Text>
+{/* Render the recommendedSound card first and highlighted */}
           </View>
         </View>
 
