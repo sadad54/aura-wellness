@@ -1,5 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
+import { supabase } from '../lib/supabase';
 
 // Define the shape of our data
 interface WellnessData {
@@ -7,30 +9,44 @@ interface WellnessData {
   streak: number;
   totalSessions: number;
   moodHistory: { date: string; mood: string; intensity: number }[];
-  journalEntries: { id: string; date: string; text: string; mood: string }[];
+  journalEntries: { id: string; date: string; text: string; mood: string; insight?: string }[];
 }
 
+// Define the shape of the Context
 interface WellnessContextType {
   data: WellnessData;
-  addJournalEntry: (entry: { text: string; mood: string; intensity: number }) => void;
-  completeSession: () => void; // Call this when finishing Breathing/Audio
+  user: any;
   activeTool: string | null;
+  insight: string;
+  
+  // Actions
   setActiveTool: (tool: string | null) => void;
+  addJournalEntry: (entry: { text: string; mood: string; intensity: number }) => void;
+  completeSession: () => void;
+  
+  // AI Features
+  analyzeEntry: (text: string) => Promise<void>;
+  getAIReframe: (negativeThought: string) => Promise<{ distortion: string; reframe: string } | null>;
+  suggestHabit: () => Promise<{ title: string; time: string } | null>;
 }
 
 const WellnessContext = createContext<WellnessContextType | undefined>(undefined);
 
 export const WellnessProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<any>(null);
   const [activeTool, setActiveTool] = useState<string | null>(null);
-    const [data, setData] = useState<WellnessData>({
-    wellnessScore: 75, // Starting score
+  const [insight, setInsight] = useState("Let's make today count.");
+  
+  // Initialize with default data
+  const [data, setData] = useState<WellnessData>({
+    wellnessScore: 75,
     streak: 0,
     totalSessions: 0,
     moodHistory: [],
     journalEntries: [],
   });
 
-  // Load data on startup
+  // 1. Load Local Data on Startup
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -43,23 +59,49 @@ export const WellnessProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     loadData();
   }, []);
 
-  // Save data whenever it changes
+  // 2. Persist Local Data on Change
   useEffect(() => {
     AsyncStorage.setItem('aura_data', JSON.stringify(data));
   }, [data]);
+
+  // 3. Handle Supabase Auth Session
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      if (session?.user) syncProfile(session.user.id);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Fetch or Create Profile in Supabase
+  const syncProfile = async (userId: string) => {
+    const { data: profile } = await supabase.from('profiles').select('*').eq('id', userId).single();
+    if (profile) {
+      // Sync cloud score to local if needed, or vice-versa
+      setData(prev => ({ ...prev, wellnessScore: profile.wellness_score }));
+    }
+  };
+
+  // --- Core Actions ---
 
   const addJournalEntry = (entry: { text: string; mood: string; intensity: number }) => {
     const newEntry = {
       id: Date.now().toString(),
       date: new Date().toISOString(),
-      ...entry,
+      text: entry.text,
+      mood: entry.mood,
     };
     
     setData(prev => ({
       ...prev,
       journalEntries: [newEntry, ...prev.journalEntries],
       moodHistory: [...prev.moodHistory, { date: newEntry.date, mood: entry.mood, intensity: entry.intensity }],
-      // Simple algorithm to boost wellness score based on action
+      // Simple algorithm: boost score slightly for taking action
       wellnessScore: Math.min(100, prev.wellnessScore + 2), 
     }));
   };
@@ -72,8 +114,91 @@ export const WellnessProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }));
   };
 
+  // --- AI Integrations ---
+
+  // 1. Analyze Journal (Groq via Supabase Edge Function)
+  const analyzeEntry = async (text: string) => {
+    try {
+      if (!user) return; // Only work if online/logged in
+
+      const { data: aiResponse, error } = await supabase.functions.invoke('analyze-journal', {
+        body: { journalText: text },
+      });
+
+      if (error) throw error;
+
+      // Parse result (assuming function returns { score_adjustment, insight })
+      const result = typeof aiResponse === 'string' ? JSON.parse(aiResponse) : aiResponse;
+      const newScore = Math.min(100, Math.max(0, data.wellnessScore + (result.score_adjustment || 0)));
+      
+      // Update State
+      setInsight(result.insight || "Keep journaling to see patterns.");
+      setData(prev => ({ ...prev, wellnessScore: newScore }));
+
+      // Save to Supabase DB
+      await supabase.from('journals').insert({
+        user_id: user.id,
+        content: text,
+        ai_insight: result.insight,
+        mood: 'neutral' // Or pass actual mood if available
+      });
+
+      // Update Profile Score
+      await supabase.from('profiles').update({ wellness_score: newScore }).eq('id', user.id);
+
+    } catch (error) {
+      console.error('AI Analysis Failed:', error);
+      // Fallback for offline/error
+      setInsight("Your thoughts are safe. Keep going.");
+    }
+  };
+
+  // 2. CBT Reframing (AI Coach)
+  const getAIReframe = async (negativeThought: string) => {
+    try {
+      const { data: aiResponse, error } = await supabase.functions.invoke('ai-coach', {
+        body: { task: 'reframe', content: negativeThought },
+      });
+
+      if (error) throw error;
+      return typeof aiResponse === 'string' ? JSON.parse(aiResponse) : aiResponse;
+    } catch (error) {
+      console.error('Reframe Error:', error);
+      Alert.alert("AI Unavailable", "Could not connect to your wellness coach.");
+      return null;
+    }
+  };
+
+  // 3. Habit Suggestion (AI Architect)
+  const suggestHabit = async () => {
+    try {
+      const recentJournal = data.journalEntries[0]?.text || "";
+      
+      const { data: aiResponse, error } = await supabase.functions.invoke('ai-coach', {
+        body: { task: 'habit_suggestion', content: recentJournal },
+      });
+
+      if (error) throw error;
+      return typeof aiResponse === 'string' ? JSON.parse(aiResponse) : aiResponse;
+    } catch (error) {
+      console.error('Habit Suggestion Error:', error);
+      return null;
+    }
+  };
+
   return (
-    <WellnessContext.Provider value={{ data, addJournalEntry, completeSession, activeTool, setActiveTool }}>
+    <WellnessContext.Provider value={{ 
+      data, 
+      user, 
+      activeTool, 
+      insight,
+      setActiveTool, 
+      addJournalEntry, 
+      completeSession, 
+      analyzeEntry,
+      getAIReframe,
+      suggestHabit
+    }}>
       {children}
     </WellnessContext.Provider>
   );

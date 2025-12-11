@@ -16,9 +16,13 @@ export const JournalScreenEnhanced: React.FC = () => {
   const [moodIntensity, setMoodIntensity] = useState(5);
   const [aiExpanded, setAiExpanded] = useState(false);
 const { addJournalEntry } = useWellness();
-const handleSave = () => {
+const { analyzeEntry } = useWellness();
+const [isAnalyzing, setIsAnalyzing] = useState(false);
+const handleSave = async () => {
     if (!entry) return;
-    
+    setIsAnalyzing(true);
+  await analyzeEntry(entry); // This triggers Groq + DB Save
+  setIsAnalyzing(false);
     addJournalEntry({
       text: entry,
       mood: selectedMood || 'neutral',
@@ -197,8 +201,9 @@ const handleSave = () => {
         icon={Check}
         onPress={handleSave}
         style={styles.saveButton}
+        disabled={isAnalyzing || !entry}
       >
-        Save Entry
+        {isAnalyzing ? "Analyzing..." : "Save Entry"}
       </AnimatedButton>
 
       {/* Recent Entries */}
